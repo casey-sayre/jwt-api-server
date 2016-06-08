@@ -10,13 +10,14 @@ var listenOptions = {
   path: './index.js',
   env: {
     NODE_PORT: 5000,
-    NODE_KEY_PATH: '../keys/id_rsa.pub',
+    NODE_KEY_PATH: '../keys/id_rsa.pub.pem',
     NODE_SQL_USER: 'root',
     NODE_SQL_HOST: 'localhost',
     NODE_SQL_PW: 'rootpassword',
     NODE_AUTH_URL: 'http://localhost:5100'
   }
 };
+livereload.options.port = 35731;
 
 var serverFiles = [
   './*.js',

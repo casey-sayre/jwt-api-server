@@ -1,5 +1,6 @@
 'use strict';
 
+var logger = require('./logger');
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
 var _ = require('lodash');
@@ -7,30 +8,34 @@ var _ = require('lodash');
 module.exports = function(opts) {
 
   var authorizedUsernames = ['casey'];
+  var publicKeyPath = opts.keyPath;
 
   return function(req, res, next) {
     var token = req.token;
     if (!token) {
       return res.status(401).json({
-        name: 'no token'
+        error: 'no token provided'
       });
     }
-    var cert = fs.readFileSync('./keys/foo.pub.pem');
-    jwt.verify(token, cert, {algorithm: 'RS256'}, function(err, decoded) {
-      if (err) {
+    var cert = fs.readFileSync(publicKeyPath);
+    jwt.verify(token, cert, {algorithm: 'RS256'}, function(error, decoded) {
+      if (error) {
+        logger.error('%j', {error: error});
         return res.status(401).json({
-          name: err.name,
-          message: err.message
+          error: 'invalid token'
         });
       }
       var tokenUsername = decoded.username;
       if (!_.includes(authorizedUsernames, tokenUsername)) {
         return res.status(401).json({
-          name: 'unauthorized username',
-          message: tokenUsername
+          error: 'token user is unauthorized',
+          detail: tokenUsername
         });
       }
-      req.username = tokenUsername;
+      req.apiData = req.apiData || {};
+      req.apiData.authorization = {
+        username: tokenUsername
+      };
       next();
     });
   };

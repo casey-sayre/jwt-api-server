@@ -11,14 +11,13 @@ module.exports = function(opts) {
 
   router.post('/login', function(req, res, next) {
 
+    // forward req to authentication server using 'request' package
     var request = require('request');
-
     var payload = {
       body: req.body,
       url: util.format('%s/login', authServerUrl),
       json: true
     };
-
     request.post(payload, function(error, response, body) {
       if (error) {
         logger.error('authenticationProxy login error %j', {

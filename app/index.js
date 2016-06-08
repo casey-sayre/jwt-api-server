@@ -17,7 +17,6 @@ var config = {
 
 var express = require('express');
 var app = express();
-var router = express.Router();
 
 var bearerToken = require('express-bearer-token');
 var cors = require('cors');
@@ -36,7 +35,7 @@ var pool = mysql.createPool({
 });
 app.locals.pool = pool;
 
-app.use('/auth', require('./authenticationRouter')(config));
+app.use('/api', require('./apiRouter')(config));
 
 app.use(function(req, res, next) {
   logger.error('Unrouted request! %s %s', req.method, req.url);
