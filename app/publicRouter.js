@@ -13,5 +13,20 @@ module.exports = function(opts) {
     });
   });
 
+  router.get('/news', function(req, res, next) {
+    return res.json({news: [
+      {
+        time: '2016-06-09',
+        headline: 'Version 0.01 is Available on GitHub',
+        copy: 'An evolving verion of the jwt-api-server is now available on GitHub'
+      },
+      {
+        time: '2016-06-02',
+        headline: 'Front-to-Back Web App Under Development',
+        copy: 'Material Design, Angular, REST, NodeJs, JsonWebToken, ...'
+      }
+    ]});
+  });
+
   return router;
 };
