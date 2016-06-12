@@ -14,18 +14,25 @@ module.exports = function(opts) {
   });
 
   router.get('/news', function(req, res, next) {
-    return res.json({news: [
-      {
-        time: '2016-06-09',
-        headline: 'Version 0.01 is Available on GitHub',
-        copy: 'An evolving verion of the jwt-api-server is now available on GitHub'
-      },
-      {
-        time: '2016-06-02',
-        headline: 'Front-to-Back Web App Under Development',
-        copy: 'Material Design, Angular, REST, NodeJs, JsonWebToken, ...'
+    var connection = req.app.locals.pool.getConnection(function(err, connection) {
+      if (err) {
+        return res.status(500).json({
+          error: 'api server sql connection error',
+        });
       }
-    ]});
+      var query = 'SELECT id, time, headline, copy FROM api.news ORDER BY time DESC LIMIT 10';
+      connection.query(query, function(err, rows) {
+        connection.release();
+        if (err) {
+          return res.status(500).json({
+            error: 'api server sql query error',
+          });
+        }
+        return res.json({
+          news: rows
+        });
+      });
+    });
   });
 
   return router;
