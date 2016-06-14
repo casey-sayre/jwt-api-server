@@ -7,7 +7,7 @@ var _ = require('lodash');
 
 module.exports = function(opts) {
 
-  var authorizedUsernames = ['casey'];
+  var authorizedUsernames = ['csayre@turnaboutsystems.com', 'info+demo@turnaboutsystems.com'];
   var publicKeyPath = opts.keyPath;
 
   return function(req, res, next) {

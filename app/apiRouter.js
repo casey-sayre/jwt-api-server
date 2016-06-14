@@ -9,7 +9,7 @@ module.exports = function(opts) {
 
   router.use('/auth', require('./authenticationRouter')(opts));
   router.use('/public', require('./publicRouter')(opts));
-  router.use('/analytics', require('./analyticsRouter')(opts));
+  router.use('/stock', require('./stockRouter')(opts));
 
   return router;
 };
