@@ -7,15 +7,14 @@ var _ = require('lodash');
 
 module.exports = function(opts) {
 
-  var authorizedUsernames = ['csayre@turnaboutsystems.com', 'info+demo@turnaboutsystems.com'];
   var publicKeyPath = opts.keyPath;
 
   return function(req, res, next) {
+    req.apiData = req.apiData || {};
+    req.apiData.authentication = {};
     var token = req.token;
     if (!token) {
-      return res.status(401).json({
-        error: 'no token provided'
-      });
+      return next();
     }
     var cert = fs.readFileSync(publicKeyPath);
     jwt.verify(token, cert, {algorithm: 'RS256'}, function(error, decoded) {
@@ -26,16 +25,7 @@ module.exports = function(opts) {
         });
       }
       var tokenUsername = decoded.username;
-      if (!_.includes(authorizedUsernames, tokenUsername)) {
-        return res.status(401).json({
-          error: 'token user is unauthorized',
-          detail: tokenUsername
-        });
-      }
-      req.apiData = req.apiData || {};
-      req.apiData.authorization = {
-        username: tokenUsername
-      };
+      req.apiData.authentication.email = tokenUsername;
       next();
     });
   };

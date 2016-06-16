@@ -35,5 +35,16 @@ module.exports = function(opts) {
     });
   });
 
+  router.get('/permissions',
+    require('./authenticate')(opts),
+    require('./userDetails')(opts),
+    require('./userPermissions')(opts),
+    function(req, res, next) {
+      return res.json({
+        permissions: req.apiData.userPermissions
+      });
+    }
+  );
+
   return router;
 };
