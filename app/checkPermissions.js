@@ -6,10 +6,10 @@ var _ = require('lodash');
 module.exports = function(requiredPermission) {
 
   return function(req, res, next) {
-    var stockPerm = _.find(req.apiData.userPermissions, function(permEntry) {
+    var requiredPermEntry = _.find(req.apiData.userPermissions, function(permEntry) {
       return permEntry.permission === requiredPermission;
     });
-    if (!stockPerm || !stockPerm.granted) {
+    if (!requiredPermEntry || !requiredPermEntry.granted) {
       return res.status(403).json({
         error: 'user lacks permission ' + requiredPermission
       });
