@@ -8,11 +8,13 @@ module.exports = function(opts) {
 
   var router = require('express').Router();
 
+  var historicalRequiredPermission = 'access-stocks'; // xref permissions table
+
   router.get('/historical',
     require('./authenticate')(opts),
     require('./userDetails')(opts),
     require('./userPermissions')(opts),
-    require('./checkPermissions')('access-stocks'),
+    require('./checkPermissions')(historicalRequiredPermission),
     function(req, res, next) {
       var connection = req.app.locals.pool.getConnection(function(err, connection) {
         if (err) {
@@ -20,7 +22,8 @@ module.exports = function(opts) {
             error: 'api server sql connection error',
           });
         }
-        var query = 'SELECT tradeDate, symbol, open, high, low, close, volume, adjClose FROM api.historicalPrices ORDER BY tradeDate DESC LIMIT 10';
+        var query = 'SELECT DATE_FORMAT(tradeDate,\'%Y-%m-%d\') AS tradeDate, symbol, open, high, low, close, volume, adjClose ' +
+          'FROM api.historicalPrices ORDER BY tradeDate DESC LIMIT 200';
         connection.query(query, function(err, rows) {
           connection.release();
           if (err) {

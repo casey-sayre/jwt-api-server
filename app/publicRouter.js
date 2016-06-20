@@ -20,7 +20,7 @@ module.exports = function(opts) {
           error: 'api server sql connection error',
         });
       }
-      var query = 'SELECT id, time, headline, copy FROM api.news ORDER BY time DESC LIMIT 10';
+      var query = 'SELECT id, DATE_FORMAT(time,\'%Y-%m-%d\') AS time, headline, copy FROM api.news ORDER BY time DESC LIMIT 10';
       connection.query(query, function(err, rows) {
         connection.release();
         if (err) {
